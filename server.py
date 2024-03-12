@@ -1,5 +1,9 @@
 import socket
 import threading
+import tkinter as tk
+from tkinter import scrolledtext
+from tkinter import messagebox
+import time
 
 HOST = '192.168.1.126'
 PORT = 8000
@@ -9,13 +13,20 @@ INPUT_BUFFER = 2048
 ADDR = (HOST,PORT)
 ACTIVE_CLIENTS = []
 FORMAT = 'utf-8'
+root= tk.Tk()
 
 def listen_for_message(client, client_name):
     while CONNECTED:
         msg = client.recv(INPUT_BUFFER).decode(FORMAT)
         if msg != '':
-            final_msg = client_name + '~'+ msg
-            send_message_all(final_msg)
+            if msg == '!disconnect':
+                print(f'Disconnecting You From The Server')
+                time.sleep(2)
+                client.close()
+                root.close()
+            else:
+                final_msg = client_name + '~'+ msg
+                send_message_all(final_msg)
         else:
             print('The Message Is Empty')
 

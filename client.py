@@ -3,9 +3,10 @@ import threading
 import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import messagebox
+import time
 
-HOST = '127.0.0.1'
-PORT = 9000
+HOST = '192.168.1.126'
+PORT = 8000
 
 DARK_GREY = '#121212'
 MEDIUM_GREY = '#1F1B24'
@@ -51,7 +52,12 @@ def connect():
 def send_message():
     message = message_textbox.get()
     if message != '':
-        client.sendall(message.encode())
+        if message == '!disconnect':
+            client.sendall(message.encode())
+            client.close()  # Close the socket
+            root.quit()
+        else:
+            client.sendall(message.encode())
         message_textbox.delete(0, len(message))
     else:
         messagebox.showerror("Empty message", "Message cannot be empty")
